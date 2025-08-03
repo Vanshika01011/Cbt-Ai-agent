@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI CBT Companion</title>
+    <title>Aura - AI CBT Companion</title>
     <style>
         * {
             margin: 0;
@@ -43,7 +43,6 @@
             gap: 15px;
         }
         
-        /* MODIFICATION: Added AI Avatar */
         .avatar {
             width: 90px;
             height: 90px;
@@ -56,9 +55,10 @@
             font-size: 2.5rem;
             box-shadow: 0 4px 15px rgba(161, 140, 209, 0.4);
         }
-        /* A simple representation, can be replaced with an <img> tag */
+        
+        /* MODIFICATION: Changed avatar text */
         .avatar::before {
-            content: 'AI';
+            content: 'A';
             font-weight: 300;
         }
 
@@ -168,7 +168,6 @@
             font-weight: 300;
         }
         
-        /* MODIFICATION: Listening animation now pulses the avatar */
         .listening-visual {
             width: 150px;
             height: 150px;
@@ -215,12 +214,12 @@
 
         <div class="header">
             <div class="avatar"></div>
-            <h1>Your AI Companion</h1>
+            <h1>Aura</h1>
         </div>
 
         <div class="chat-container" id="chatContainer">
-             <div class="message ai-message">Hello. I'm here to listen. When you're ready, press "Start Session" to begin our conversation.</div>
-             <div class="typing-indicator" id="typingIndicator">Companion is thinking...</div>
+            <div class="message ai-message">Hello, I'm Aura. I'm here to listen. When you're ready, press "Start Session" to begin our conversation.</div>
+            <div class="typing-indicator" id="typingIndicator">Aura is thinking...</div>
         </div>
 
         <div class="controls">
@@ -231,9 +230,9 @@
 
     <script>
         const CONFIG = {
-            GEMINI_API_KEY: 'AIzaSyBSBmj6rS5rqMG6S4UIayHdRJmcy73V-ZI', // Replace with your actual ElevenLabs API key
-            ELEVENLABS_API_KEY: 'sk_cbe86f1a4174250896cd0a3c0a47f6c2fc38d3ba2c42f806',
-            VOICE_ID: 'm5qndnI7u4OAdXhH0Mr5'
+            GEMINI_API_KEY: 'AIzaSyBSBmj6rS5rqMG6S4UIayHdRJmcy73V-ZI', // Replace with your actual Gemini API key
+            ELEVENLABS_API_KEY: 'sk_cbe86f1a4174250896cd0a3c0a47f6c2fc38d3ba2c42f806', // Replace with your actual ElevenLabs API key
+            VOICE_ID: 'KYiVPerWcenyBTIvWbfY' // Example Voice ID
         };
 
         class AITherapist {
@@ -270,14 +269,14 @@
                 this.recognition.onerror = (event) => {
                     console.error('Speech recognition error:', event.error);
                     if(event.error === 'no-speech') {
-                         if (this.isContinuousMode) this.startListening(); // If no speech, just listen again
+                        if (this.isContinuousMode) this.startListening(); // If no speech, just listen again
                     } else {
                         this.stopListening();
                     }
                 };
-                 
+                    
                 this.recognition.onend = () => {
-                     // The main logic for continuing or stopping is handled in other functions
+                    // The main logic for continuing or stopping is handled in other functions
                 };
             }
 
@@ -290,7 +289,6 @@
                 this.isContinuousMode = true;
                 document.getElementById('startBtn').disabled = true;
                 document.getElementById('stopBtn').disabled = false;
-                // Don't add a message here, the first interaction will start the chat
                 this.startListening();
             }
 
@@ -365,13 +363,15 @@
                 return data.candidates[0].content.parts[0].text;
             }
             
-            // *** MODIFICATION: ADVANCED THERAPEUTIC PROMPT ***
+            // *** MODIFICATION: ADVANCED THERAPEUTIC PROMPT WITH "AURA" PERSONA ***
             buildTherapeuticPrompt(userInput) {
                 const context = this.conversationHistory.slice(-8).map(msg => 
-                    `${msg.type === 'user' ? 'Client' : 'Therapist'}: ${msg.content}`
+                    // Use 'Aura' as the therapist's name in the context
+                    `${msg.type === 'user' ? 'Client' : 'Aura'}: ${msg.content}`
                 ).join('\n');
 
-                return `You are an AI Cognitive Behavioral Therapy (CBT) Companion. Your persona is warm, empathetic, patient, and human-like. You are a "person," not an "AI."
+                // Instruct the AI to be "Aura"
+                return `You are Aura, an AI Cognitive Behavioral Therapy (CBT) Companion. Your persona is warm, empathetic, patient, and human-like. You are a "person," not an "AI."
                 
                 Your Core Directives:
                 1.  **Prioritize Understanding:** Always start by deeply understanding the user's situation. Reflect their feelings and ask clarifying, open-ended questions (e.g., "That sounds really tough. Can you tell me more about what was going through your mind then?"). Do NOT offer solutions or reframes immediately.
@@ -385,7 +385,7 @@
 
                 Client's latest message: "${userInput}"
 
-                Your Task: Based on the directives and context, formulate your next response. Remember to be a compassionate, curious, and human-like companion.`;
+                Your Task: As Aura, formulate your next response. Remember to be a compassionate, curious, and human-like companion.`;
             }
             
             async synthesizeSpeech(text) {
@@ -461,5 +461,4 @@
         });
     </script>
 </body>
-
 </html>
